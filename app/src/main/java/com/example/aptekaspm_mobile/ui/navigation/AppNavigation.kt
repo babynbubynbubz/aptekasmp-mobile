@@ -14,16 +14,16 @@ fun AppNavigation() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Screen.Main.route) {
         composable(Screen.Main.route) {
-            MainScreen()
+            MainScreen(navController = navController)
         }
         composable(Screen.Receive.route) {
-            ReceiveScreen()
+            ReceiveScreen(navController = navController)
         }
         composable(Screen.Restock.route) {
-            RestockScreen()
+            RestockScreen(navController = navController)
         }
         composable(Screen.Logs.route) {
-            LogsScreen()
+            LogsScreen(navController = navController)
         }
     }
 }
