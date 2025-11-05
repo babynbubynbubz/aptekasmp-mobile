@@ -27,54 +27,59 @@ fun RestockScreen(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("Restock Medkit", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text("${uiState.name} (${uiState.inn})", style = MaterialTheme.typography.titleMedium)
-        Text("Expires: ${uiState.expiryDate}")
-        Text("Amount: ${uiState.remainingAmount}/${uiState.inBoxAmount}")
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        OutlinedTextField(
-            value = uiState.medkitId,
-            onValueChange = viewModel::onMedkitIdChanged,
-            label = { Text("Medkit ID") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
-            value = uiState.transferAmount,
-            onValueChange = viewModel::onTransferAmountChanged,
-            label = { Text("Transfer Amount") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-
-        if (uiState.isLoading) {
-            CircularProgressIndicator()
-        } else {
-            Button(onClick = viewModel::restockMedkit) {
-                Text("Confirm Restock")
-            }
-        }
-
-        uiState.error?.let {
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text("Restock Medkit", style = MaterialTheme.typography.headlineMedium)
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = it, color = MaterialTheme.colorScheme.error)
-        }
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { navController.popBackStack() }) {
-            Text("Back")
+            Text("${uiState.name} (${uiState.inn})", style = MaterialTheme.typography.titleMedium)
+            Text("Expires: ${uiState.expiryDate}")
+            Text("Amount: ${uiState.remainingAmount}/${uiState.inBoxAmount}")
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            OutlinedTextField(
+                value = uiState.medkitId,
+                onValueChange = viewModel::onMedkitIdChanged,
+                label = { Text("Medkit ID") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = uiState.transferAmount,
+                onValueChange = viewModel::onTransferAmountChanged,
+                label = { Text("Transfer Amount") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+
+            if (uiState.isLoading) {
+                CircularProgressIndicator()
+            } else {
+                Button(onClick = viewModel::restockMedkit) {
+                    Text("Confirm Restock")
+                }
+            }
+
+            uiState.error?.let {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(text = it, color = MaterialTheme.colorScheme.error)
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = { navController.popBackStack() }) {
+                Text("Back")
+            }
         }
     }
 }

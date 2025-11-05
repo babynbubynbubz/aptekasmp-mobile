@@ -25,44 +25,49 @@ fun ReceiveScreen(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("Receive Medication", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text("${uiState.name} (${uiState.inn})", style = MaterialTheme.typography.titleMedium)
-        Text("GID: ${uiState.gid} / SN: ${uiState.sn}")
-        Text("Amount in box: ${uiState.inBoxAmount}")
-        Spacer(modifier = Modifier.height(24.dp))
-
-        OutlinedTextField(
-            value = uiState.expiryDate,
-            onValueChange = viewModel::onExpiryDateChanged,
-            label = { Text("Expiry Date (YYYY-MM-DD)") },
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-
-        if (uiState.isLoading) {
-            CircularProgressIndicator()
-        } else {
-            Button(onClick = viewModel::receiveMedication) {
-                Text("Confirm Receive")
-            }
-        }
-
-        uiState.error?.let {
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text("Receive Medication", style = MaterialTheme.typography.headlineMedium)
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = it, color = MaterialTheme.colorScheme.error)
-        }
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { navController.popBackStack() }) {
-            Text("Back")
+            Text("${uiState.name} (${uiState.inn})", style = MaterialTheme.typography.titleMedium)
+            Text("GID: ${uiState.gid} / SN: ${uiState.sn}")
+            Text("Amount in box: ${uiState.inBoxAmount}")
+            Spacer(modifier = Modifier.height(24.dp))
+
+            OutlinedTextField(
+                value = uiState.expiryDate,
+                onValueChange = viewModel::onExpiryDateChanged,
+                label = { Text("Expiry Date (YYYY-MM-DD)") },
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+
+            if (uiState.isLoading) {
+                CircularProgressIndicator()
+            } else {
+                Button(onClick = viewModel::receiveMedication) {
+                    Text("Confirm Receive")
+                }
+            }
+
+            uiState.error?.let {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(text = it, color = MaterialTheme.colorScheme.error)
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = { navController.popBackStack() }) {
+                Text("Back")
+            }
         }
     }
 }

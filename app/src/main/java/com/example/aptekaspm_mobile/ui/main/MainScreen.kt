@@ -28,6 +28,8 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 
+import androidx.compose.material3.Scaffold
+
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MainScreen(
@@ -37,90 +39,93 @@ fun MainScreen(
     val uiState by viewModel.uiState.collectAsState()
     val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .safeDrawingPadding()
-    ) {
-        if (cameraPermissionState.status.isGranted) {
-            Box(modifier = Modifier.weight(1f)) {
-                CameraPreview(onBarcodeDetected = { viewModel.onBarcodeScanned(it) })
-                if (uiState.isLoading) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
-            }
-        } else {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "Camera permission is required to use the scanner.",
-                    textAlign = TextAlign.Center
-                )
-                Button(onClick = { cameraPermissionState.launchPermissionRequest() }) {
-                    Text("Grant Permission")
-                }
-            }
-            return // Stop rendering the rest of the UI
-        }
-
-        // Display for the scanned code info
-        InfoDisplay(uiState)
-
-        // Navigation buttons
-        Row(
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background
+    ) { paddingValues ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
+                .fillMaxSize()
+                .padding(paddingValues)
         ) {
-            val isNavEnabled = uiState.medicationInfo != null
-            Button(
-                onClick = {
-                    uiState.medicationInfo?.info?.let { info ->
-                        navController.navigate(
-                            Screen.Receive.createRoute(
-                                info.gid,
-                                info.sn,
-                                info.name,
-                                info.inn,
-                                info.inBoxAmount
-                            )
-                        )
+            if (cameraPermissionState.status.isGranted) {
+                Box(modifier = Modifier.weight(1f)) {
+                    CameraPreview(onBarcodeDetected = { viewModel.onBarcodeScanned(it) })
+                    if (uiState.isLoading) {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                     }
-                },
-                enabled = isNavEnabled
-            ) {
-                Text("Receive")
-            }
-            Button(
-                onClick = {
-                    uiState.medicationInfo?.let { medInfo ->
-                        medInfo.storageInfo?.let {
-                            navController.navigate(
-                                Screen.Restock.createRoute(
-                                    gid = medInfo.info.gid,
-                                    sn = medInfo.info.sn,
-                                    name = medInfo.info.name,
-                                    inn = medInfo.info.inn,
-                                    inBoxAmount = medInfo.info.inBoxAmount,
-                                    remainingAmount = it.inBoxRemaining,
-                                    expiryDate = it.expiryDate
+                }
+
+                // Display for the scanned code info
+                InfoDisplay(uiState)
+
+                // Navigation buttons
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    val isNavEnabled = uiState.medicationInfo != null
+                    Button(
+                        onClick = {
+                            uiState.medicationInfo?.info?.let { info ->
+                                navController.navigate(
+                                    Screen.Receive.createRoute(
+                                        info.gid,
+                                        info.sn,
+                                        info.name,
+                                        info.inn,
+                                        info.inBoxAmount
+                                    )
                                 )
-                            )
-                        }
+                            }
+                        },
+                        enabled = isNavEnabled
+                    ) {
+                        Text("Receive")
                     }
-                },
-                enabled = isNavEnabled && uiState.medicationInfo?.storageInfo != null
-            ) {
-                Text("Restock")
-            }
-            Button(onClick = { navController.navigate(Screen.Logs.route) }) {
-                Text("Logs")
+                    Button(
+                        onClick = {
+                            uiState.medicationInfo?.let { medInfo ->
+                                medInfo.storageInfo?.let {
+                                    navController.navigate(
+                                        Screen.Restock.createRoute(
+                                            gid = medInfo.info.gid,
+                                            sn = medInfo.info.sn,
+                                            name = medInfo.info.name,
+                                            inn = medInfo.info.inn,
+                                            inBoxAmount = medInfo.info.inBoxAmount,
+                                            remainingAmount = it.inBoxRemaining,
+                                            expiryDate = it.expiryDate
+                                        )
+                                    )
+                                }
+                            }
+                        },
+                        enabled = isNavEnabled && uiState.medicationInfo?.storageInfo != null
+                    ) {
+                        Text("Restock")
+                    }
+                    Button(onClick = { navController.navigate(Screen.Logs.route) }) {
+                        Text("Logs")
+                    }
+                }
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Camera permission is required to use the scanner.",
+                        textAlign = TextAlign.Center
+                    )
+                    Button(onClick = { cameraPermissionState.launchPermissionRequest() }) {
+                        Text("Grant Permission")
+                    }
+                }
             }
         }
     }
