@@ -1,4 +1,3 @@
-
 package com.example.aptekaspm_mobile.ui.main
 
 import android.util.Log
@@ -68,7 +67,8 @@ fun CameraPreview(onBarcodeDetected: (String) -> Unit) {
     )
 }
 
-private class BarcodeAnalyzer(private val onBarcodeDetected: (String) -> Unit) : ImageAnalysis.Analyzer {
+private class BarcodeAnalyzer(private val onBarcodeDetected: (String) -> Unit) :
+    ImageAnalysis.Analyzer {
     // Configure the scanner to detect Data Matrix and QR codes
     private val options = BarcodeScannerOptions.Builder()
         .setBarcodeFormats(

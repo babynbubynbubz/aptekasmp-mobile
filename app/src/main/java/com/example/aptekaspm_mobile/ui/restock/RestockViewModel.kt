@@ -44,11 +44,20 @@ class RestockViewModel @Inject constructor(
             it.copy(
                 gid = savedStateHandle.get<String>("gid") ?: "",
                 sn = savedStateHandle.get<String>("sn") ?: "",
-                name = URLDecoder.decode(savedStateHandle.get<String>("name") ?: "", StandardCharsets.UTF_8.toString()),
-                inn = URLDecoder.decode(savedStateHandle.get<String>("inn") ?: "", StandardCharsets.UTF_8.toString()),
+                name = URLDecoder.decode(
+                    savedStateHandle.get<String>("name") ?: "",
+                    StandardCharsets.UTF_8.toString()
+                ),
+                inn = URLDecoder.decode(
+                    savedStateHandle.get<String>("inn") ?: "",
+                    StandardCharsets.UTF_8.toString()
+                ),
                 inBoxAmount = savedStateHandle.get<Int>("inBoxAmount") ?: 0,
                 remainingAmount = savedStateHandle.get<Int>("remainingAmount") ?: 0,
-                expiryDate = URLDecoder.decode(savedStateHandle.get<String>("expiryDate") ?: "", StandardCharsets.UTF_8.toString())
+                expiryDate = URLDecoder.decode(
+                    savedStateHandle.get<String>("expiryDate") ?: "",
+                    StandardCharsets.UTF_8.toString()
+                )
             )
         }
     }

@@ -47,12 +47,34 @@ class LogsViewModel @Inject constructor(
 
                 // FAKE RESPONSE FOR DEVELOPMENT
                 val fakeRestockLogs = listOf(
-                    RestockLogItem(1, 101, 10, "2023-10-27T10:00:00Z", "Super Med", "SN67890", "2025-12-31"),
-                    RestockLogItem(2, 102, 5, "2023-10-27T11:00:00Z", "Another Med", "SNABCDE", "2024-11-30")
+                    RestockLogItem(
+                        1,
+                        101,
+                        10,
+                        "2023-10-27T10:00:00Z",
+                        "Super Med",
+                        "SN67890",
+                        "2025-12-31"
+                    ),
+                    RestockLogItem(
+                        2,
+                        102,
+                        5,
+                        "2023-10-27T11:00:00Z",
+                        "Another Med",
+                        "SNABCDE",
+                        "2024-11-30"
+                    )
                 )
                 val fakeReceiveLogs = listOf(
                     ReceiveLogItem(1, "2023-10-26T09:00:00Z", "Super Med", "SN67890", "2025-12-31"),
-                    ReceiveLogItem(2, "2023-10-26T09:30:00Z", "Another Med", "SNABCDE", "2024-11-30")
+                    ReceiveLogItem(
+                        2,
+                        "2023-10-26T09:30:00Z",
+                        "Another Med",
+                        "SNABCDE",
+                        "2024-11-30"
+                    )
                 )
 
                 _uiState.update {

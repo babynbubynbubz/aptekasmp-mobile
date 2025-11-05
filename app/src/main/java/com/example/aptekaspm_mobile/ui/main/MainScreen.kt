@@ -1,4 +1,3 @@
-
 package com.example.aptekaspm_mobile.ui.main
 
 import android.Manifest
@@ -81,9 +80,17 @@ fun MainScreen(
         ) {
             val isNavEnabled = uiState.medicationInfo != null
             Button(
-                onClick = { 
+                onClick = {
                     uiState.medicationInfo?.info?.let { info ->
-                        navController.navigate(Screen.Receive.createRoute(info.gid, info.sn, info.name, info.inn, info.inBoxAmount))
+                        navController.navigate(
+                            Screen.Receive.createRoute(
+                                info.gid,
+                                info.sn,
+                                info.name,
+                                info.inn,
+                                info.inBoxAmount
+                            )
+                        )
                     }
                 },
                 enabled = isNavEnabled
@@ -91,18 +98,20 @@ fun MainScreen(
                 Text("Receive")
             }
             Button(
-                onClick = { 
+                onClick = {
                     uiState.medicationInfo?.let { medInfo ->
                         medInfo.storageInfo?.let {
-                            navController.navigate(Screen.Restock.createRoute(
-                                gid = medInfo.info.gid,
-                                sn = medInfo.info.sn,
-                                name = medInfo.info.name,
-                                inn = medInfo.info.inn,
-                                inBoxAmount = medInfo.info.inBoxAmount,
-                                remainingAmount = it.inBoxRemaining,
-                                expiryDate = it.expiryDate
-                            ))
+                            navController.navigate(
+                                Screen.Restock.createRoute(
+                                    gid = medInfo.info.gid,
+                                    sn = medInfo.info.sn,
+                                    name = medInfo.info.name,
+                                    inn = medInfo.info.inn,
+                                    inBoxAmount = medInfo.info.inBoxAmount,
+                                    remainingAmount = it.inBoxRemaining,
+                                    expiryDate = it.expiryDate
+                                )
+                            )
                         }
                     }
                 },
@@ -131,7 +140,10 @@ private fun InfoDisplay(uiState: MainScreenState) {
 
         val info = uiState.medicationInfo
         if (info != null) {
-            Text(text = "${info.info.name} (${info.info.inn})", style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = "${info.info.name} (${info.info.inn})",
+                style = MaterialTheme.typography.titleMedium
+            )
             Text(text = "GID: ${info.info.gid} / SN: ${info.info.sn}")
             Text(text = "Total in box: ${info.info.inBoxAmount}")
             info.storageInfo?.let {

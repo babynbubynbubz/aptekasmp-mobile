@@ -91,9 +91,14 @@ fun LogsScreen(
 fun RestockLogsList(logs: List<RestockLogItem>) {
     LazyColumn(contentPadding = PaddingValues(16.dp)) {
         items(logs) { log ->
-            Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+            Card(modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Medication: ${log.medicationName}", style = MaterialTheme.typography.titleMedium)
+                    Text(
+                        "Medication: ${log.medicationName}",
+                        style = MaterialTheme.typography.titleMedium
+                    )
                     Text("SN: ${log.sn}")
                     Text("To Medkit: ${log.medkitId}")
                     Text("Amount: ${log.transferAmount}")
@@ -108,9 +113,14 @@ fun RestockLogsList(logs: List<RestockLogItem>) {
 fun ReceiveLogsList(logs: List<ReceiveLogItem>) {
     LazyColumn(contentPadding = PaddingValues(16.dp)) {
         items(logs) { log ->
-            Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+            Card(modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Medication: ${log.medicationName}", style = MaterialTheme.typography.titleMedium)
+                    Text(
+                        "Medication: ${log.medicationName}",
+                        style = MaterialTheme.typography.titleMedium
+                    )
                     Text("SN: ${log.sn}")
                     Text("Received: ${log.receiveDate}")
                     Text("Expires: ${log.expiryDate}")
