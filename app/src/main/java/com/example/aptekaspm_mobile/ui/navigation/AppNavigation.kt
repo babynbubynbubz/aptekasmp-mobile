@@ -9,7 +9,7 @@ import androidx.navigation.navArgument
 import com.example.aptekaspm_mobile.ui.logs.LogsScreen
 import com.example.aptekaspm_mobile.ui.main.MainScreen
 import com.example.aptekaspm_mobile.ui.receive.ReceiveScreen
-import com.example.aptekaspm_mobile.ui.restock.RestockScreen
+import com.example.aptekaspm_mobile.ui.dispense.DispenseScreen
 
 @Composable
 fun AppNavigation() {
@@ -21,6 +21,7 @@ fun AppNavigation() {
         composable(
             route = Screen.Receive.route,
             arguments = listOf(
+                navArgument("scanData") { type = NavType.StringType },
                 navArgument("gid") { type = NavType.StringType },
                 navArgument("sn") { type = NavType.StringType },
                 navArgument("name") { type = NavType.StringType },
@@ -31,8 +32,9 @@ fun AppNavigation() {
             ReceiveScreen(navController = navController)
         }
         composable(
-            route = Screen.Restock.route,
+            route = Screen.Dispense.route,
             arguments = listOf(
+                navArgument("scanData") { type = NavType.StringType },
                 navArgument("gid") { type = NavType.StringType },
                 navArgument("sn") { type = NavType.StringType },
                 navArgument("name") { type = NavType.StringType },
@@ -42,7 +44,7 @@ fun AppNavigation() {
                 navArgument("expiryDate") { type = NavType.StringType },
             )
         ) { backStackEntry ->
-            RestockScreen(navController = navController)
+            DispenseScreen(navController = navController)
         }
         composable(Screen.Logs.route) {
             LogsScreen(navController = navController)

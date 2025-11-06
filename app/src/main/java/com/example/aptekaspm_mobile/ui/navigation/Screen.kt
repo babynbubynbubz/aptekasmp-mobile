@@ -7,23 +7,26 @@ sealed class Screen(val route: String) {
     object Main : Screen("main_screen")
     object Logs : Screen("logs_screen")
 
-    object Receive : Screen("receive_screen/{gid}/{sn}/{name}/{inn}/{inBoxAmount}") {
+    object Receive : Screen("receive_screen/{scanData}/{gid}/{sn}/{name}/{inn}/{inBoxAmount}") {
         fun createRoute(
+            scanData: String,
             gid: String,
             sn: String,
             name: String,
             inn: String,
             inBoxAmount: Int
         ): String {
+            val encodedScanData = URLEncoder.encode(scanData, StandardCharsets.UTF_8.toString())
             val encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8.toString())
             val encodedInn = URLEncoder.encode(inn, StandardCharsets.UTF_8.toString())
-            return "receive_screen/$gid/$sn/$encodedName/$encodedInn/$inBoxAmount"
+            return "receive_screen/$encodedScanData/$gid/$sn/$encodedName/$encodedInn/$inBoxAmount"
         }
     }
 
-    object Restock :
-        Screen("restock_screen/{gid}/{sn}/{name}/{inn}/{inBoxAmount}/{remainingAmount}/{expiryDate}") {
+    object Dispense :
+        Screen("dispense_screen/{scanData}/{gid}/{sn}/{name}/{inn}/{inBoxAmount}/{remainingAmount}/{expiryDate}") {
         fun createRoute(
+            scanData: String,
             gid: String,
             sn: String,
             name: String,
@@ -32,10 +35,11 @@ sealed class Screen(val route: String) {
             remainingAmount: Int,
             expiryDate: String
         ): String {
+            val encodedScanData = URLEncoder.encode(scanData, StandardCharsets.UTF_8.toString())
             val encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8.toString())
             val encodedInn = URLEncoder.encode(inn, StandardCharsets.UTF_8.toString())
             val encodedExpiry = URLEncoder.encode(expiryDate, StandardCharsets.UTF_8.toString())
-            return "restock_screen/$gid/$sn/$encodedName/$encodedInn/$inBoxAmount/$remainingAmount/$encodedExpiry"
+            return "dispense_screen/$encodedScanData/$gid/$sn/$encodedName/$encodedInn/$inBoxAmount/$remainingAmount/$encodedExpiry"
         }
     }
 }

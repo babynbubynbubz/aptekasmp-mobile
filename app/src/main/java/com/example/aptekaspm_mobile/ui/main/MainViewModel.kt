@@ -43,34 +43,24 @@ class MainViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                // In a real app, you would make the network call here.
-                // For now, we'll simulate a successful response with dummy data
-                // as the API is not live.
                 val request = MedicationInfoRequest(scanData = barcode)
-                // val response = apiService.getMedicationInfo(request)
+                val response = apiService.getMedicationInfo(request)
 
-                // FAKE RESPONSE FOR DEVELOPMENT
-                val fakeResponse = MedicationInfoResponse(
-                    info = com.example.aptekaspm_mobile.data.network.models.MedicationDetails(
-                        name = "Super Med",
-                        inn = "Medicus Supericus",
-                        inBoxAmount = 100,
-                        gid = "GID12345",
-                        sn = "SN67890"
-                    ),
-                    storageInfo = com.example.aptekaspm_mobile.data.network.models.StorageInfo(
-                        inBoxRemaining = 50,
-                        expiryDate = "2025-12-31"
-                    )
-                )
-
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        medicationInfo = fakeResponse
-                    )
+                if (response.isSuccessful) {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            medicationInfo = response.body()
+                        )
+                    }
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            error = "Error: ${response.code()} ${response.message()}"
+                        )
+                    }
                 }
-
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(

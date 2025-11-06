@@ -13,12 +13,9 @@ data class MedicationInfoResponse(
 
 data class MedicationDetails(
     val name: String,
-    @SerializedName("INN")
     val inn: String,
     val inBoxAmount: Int,
-    @SerializedName("GID")
     val gid: String,
-    @SerializedName("SN")
     val sn: String
 )
 

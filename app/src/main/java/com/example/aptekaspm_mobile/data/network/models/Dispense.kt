@@ -1,11 +1,12 @@
 package com.example.aptekaspm_mobile.data.network.models
 
-data class ReceiveRequest(
+data class DispenseRequest(
     val scanData: String,
-    val expiryDate: String
+    val transferAmount: Int,
+    val medkitId: Int
 )
 
-data class ReceiveResponse(
+data class DispenseResponse(
     val success: Boolean,
     val message: String
 )

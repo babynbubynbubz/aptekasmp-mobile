@@ -22,7 +22,8 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideRetrofit(gson: Gson): Retrofit = Retrofit.Builder()
-        .baseUrl("https://api.example.com/") // Placeholder
+        // .baseUrl("http://your.api.server/") // Placeholder, please replace with your actual API server URL
+        .baseUrl("http://carapuziki.ddns.net:55555/")
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
 

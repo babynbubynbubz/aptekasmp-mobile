@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets
 
 data class ReceiveScreenState(
     val isLoading: Boolean = false,
+    val scanData: String = "",
     val gid: String = "",
     val sn: String = "",
     val name: String = "",
@@ -39,6 +40,7 @@ class ReceiveViewModel @Inject constructor(
     init {
         _uiState.update {
             it.copy(
+                scanData = URLDecoder.decode(savedStateHandle.get<String>("scanData") ?: "", StandardCharsets.UTF_8.toString()),
                 gid = savedStateHandle.get<String>("gid") ?: "",
                 sn = savedStateHandle.get<String>("sn") ?: "",
                 name = URLDecoder.decode(
@@ -69,21 +71,15 @@ class ReceiveViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val request = ReceiveRequest(
-                    gid = _uiState.value.gid,
-                    sn = _uiState.value.sn,
+                    scanData = _uiState.value.scanData,
                     expiryDate = _uiState.value.expiryDate
                 )
-                // val response = apiService.receiveMedication(request)
-                // if (response.isSuccessful) {
-                //    _uiState.update { it.copy(isLoading = false, isSuccess = true) }
-                // } else {
-                //    _uiState.update { it.copy(isLoading = false, error = "Receive failed") }
-                // }
-
-                // Simulate API call
-                kotlinx.coroutines.delay(1000)
-                _uiState.update { it.copy(isLoading = false, isSuccess = true) }
-
+                val response = apiService.receiveMedication(request)
+                if (response.isSuccessful) {
+                    _uiState.update { it.copy(isLoading = false, isSuccess = true) }
+                } else {
+                    _uiState.update { it.copy(isLoading = false, error = "Receive failed: ${response.message()}") }
+                }
             } catch (e: Exception) {
                 _uiState.update { it.copy(isLoading = false, error = e.message) }
             }

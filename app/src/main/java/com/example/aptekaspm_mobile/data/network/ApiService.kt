@@ -2,12 +2,14 @@ package com.example.aptekaspm_mobile.data.network
 
 import com.example.aptekaspm_mobile.data.network.models.CrewRequest
 import com.example.aptekaspm_mobile.data.network.models.CrewResponse
+import com.example.aptekaspm_mobile.data.network.models.DispenseRequest
+import com.example.aptekaspm_mobile.data.network.models.DispenseResponse
+import com.example.aptekaspm_mobile.data.network.models.DispensingLogItem
 import com.example.aptekaspm_mobile.data.network.models.MedicationInfoRequest
 import com.example.aptekaspm_mobile.data.network.models.MedicationInfoResponse
-import com.example.aptekaspm_mobile.data.network.models.ReceiveLogItem
 import com.example.aptekaspm_mobile.data.network.models.ReceiveRequest
-import com.example.aptekaspm_mobile.data.network.models.RestockLogItem
-import com.example.aptekaspm_mobile.data.network.models.RestockRequest
+import com.example.aptekaspm_mobile.data.network.models.ReceiveResponse
+import com.example.aptekaspm_mobile.data.network.models.ReceivingLogItem
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -15,22 +17,22 @@ import retrofit2.http.POST
 
 interface ApiService {
 
-    @POST("medication-information")
+    @POST("api/Pharmacy/medication-info")
     suspend fun getMedicationInfo(@Body request: MedicationInfoRequest): Response<MedicationInfoResponse>
 
-    @POST("receive")
-    suspend fun receiveMedication(@Body request: ReceiveRequest): Response<Unit>
+    @POST("api/Pharmacy/receive")
+    suspend fun receiveMedication(@Body request: ReceiveRequest): Response<ReceiveResponse>
 
-    @POST("restock")
-    suspend fun restockMedkit(@Body request: RestockRequest): Response<Unit>
+    @POST("api/Pharmacy/dispense")
+    suspend fun dispenseMedication(@Body request: DispenseRequest): Response<DispenseResponse>
 
-    @POST("crew-number")
-    suspend fun getCrewNumber(@Body request: CrewRequest): Response<CrewResponse>
+    @POST("api/Pharmacy/crew-info")
+    suspend fun getCrewInfo(@Body request: CrewRequest): Response<CrewResponse>
 
-    @GET("logs/restock")
-    suspend fun getRestockLogs(): Response<List<RestockLogItem>>
+    @GET("api/Pharmacy/dispensing-logs")
+    suspend fun getDispensingLogs(): Response<List<DispensingLogItem>>
 
-    @GET("logs/receive")
-    suspend fun getReceiveLogs(): Response<List<ReceiveLogItem>>
+    @GET("api/Pharmacy/receiving-logs")
+    suspend fun getReceivingLogs(): Response<List<ReceivingLogItem>>
 
 }

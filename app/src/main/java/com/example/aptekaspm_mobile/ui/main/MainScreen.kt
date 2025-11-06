@@ -69,15 +69,18 @@ fun MainScreen(
                     Button(
                         onClick = {
                             uiState.medicationInfo?.info?.let { info ->
-                                navController.navigate(
-                                    Screen.Receive.createRoute(
-                                        info.gid,
-                                        info.sn,
-                                        info.name,
-                                        info.inn,
-                                        info.inBoxAmount
+                                uiState.scannedCode?.let { scanData ->
+                                    navController.navigate(
+                                        Screen.Receive.createRoute(
+                                            scanData = scanData,
+                                            gid = info.gid,
+                                            sn = info.sn,
+                                            name = info.name,
+                                            inn = info.inn,
+                                            inBoxAmount = info.inBoxAmount
+                                        )
                                     )
-                                )
+                                }
                             }
                         },
                         enabled = isNavEnabled
@@ -88,23 +91,26 @@ fun MainScreen(
                         onClick = {
                             uiState.medicationInfo?.let { medInfo ->
                                 medInfo.storageInfo?.let {
-                                    navController.navigate(
-                                        Screen.Restock.createRoute(
-                                            gid = medInfo.info.gid,
-                                            sn = medInfo.info.sn,
-                                            name = medInfo.info.name,
-                                            inn = medInfo.info.inn,
-                                            inBoxAmount = medInfo.info.inBoxAmount,
-                                            remainingAmount = it.inBoxRemaining,
-                                            expiryDate = it.expiryDate
+                                    uiState.scannedCode?.let { scanData ->
+                                        navController.navigate(
+                                            Screen.Dispense.createRoute(
+                                                scanData = scanData,
+                                                gid = medInfo.info.gid,
+                                                sn = medInfo.info.sn,
+                                                name = medInfo.info.name,
+                                                inn = medInfo.info.inn,
+                                                inBoxAmount = medInfo.info.inBoxAmount,
+                                                remainingAmount = it.inBoxRemaining,
+                                                expiryDate = it.expiryDate
+                                            )
                                         )
-                                    )
+                                    }
                                 }
                             }
                         },
                         enabled = isNavEnabled && uiState.medicationInfo?.storageInfo != null
                     ) {
-                        Text("Restock")
+                        Text("Dispense")
                     }
                     Button(onClick = { navController.navigate(Screen.Logs.route) }) {
                         Text("Logs")

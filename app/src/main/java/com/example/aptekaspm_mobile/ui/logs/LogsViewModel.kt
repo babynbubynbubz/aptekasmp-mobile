@@ -3,8 +3,8 @@ package com.example.aptekaspm_mobile.ui.logs
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.aptekaspm_mobile.data.network.ApiService
-import com.example.aptekaspm_mobile.data.network.models.ReceiveLogItem
-import com.example.aptekaspm_mobile.data.network.models.RestockLogItem
+import com.example.aptekaspm_mobile.data.network.models.DispensingLogItem
+import com.example.aptekaspm_mobile.data.network.models.ReceivingLogItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,8 +15,8 @@ import javax.inject.Inject
 
 data class LogsScreenState(
     val isLoading: Boolean = false,
-    val restockLogs: List<RestockLogItem> = emptyList(),
-    val receiveLogs: List<ReceiveLogItem> = emptyList(),
+    val dispensingLogs: List<DispensingLogItem> = emptyList(),
+    val receivingLogs: List<ReceivingLogItem> = emptyList(),
     val error: String? = null,
     val selectedTab: Int = 0
 )
@@ -42,49 +42,29 @@ class LogsViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                // In a real app, you would make the network calls here.
-                // For now, we'll simulate a successful response with dummy data.
+                val dispensingLogsDeferred = async { apiService.getDispensingLogs() }
+                val receivingLogsDeferred = async { apiService.getReceivingLogs() }
 
-                // FAKE RESPONSE FOR DEVELOPMENT
-                val fakeRestockLogs = listOf(
-                    RestockLogItem(
-                        1,
-                        101,
-                        10,
-                        "2023-10-27T10:00:00Z",
-                        "Super Med",
-                        "SN67890",
-                        "2025-12-31"
-                    ),
-                    RestockLogItem(
-                        2,
-                        102,
-                        5,
-                        "2023-10-27T11:00:00Z",
-                        "Another Med",
-                        "SNABCDE",
-                        "2024-11-30"
-                    )
-                )
-                val fakeReceiveLogs = listOf(
-                    ReceiveLogItem(1, "2023-10-26T09:00:00Z", "Super Med", "SN67890", "2025-12-31"),
-                    ReceiveLogItem(
-                        2,
-                        "2023-10-26T09:30:00Z",
-                        "Another Med",
-                        "SNABCDE",
-                        "2024-11-30"
-                    )
-                )
+                val dispensingLogsResponse = dispensingLogsDeferred.await()
+                val receivingLogsResponse = receivingLogsDeferred.await()
 
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        restockLogs = fakeRestockLogs,
-                        receiveLogs = fakeReceiveLogs
-                    )
+                if (dispensingLogsResponse.isSuccessful && receivingLogsResponse.isSuccessful) {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            dispensingLogs = dispensingLogsResponse.body() ?: emptyList(),
+                            receivingLogs = receivingLogsResponse.body() ?: emptyList()
+                        )
+                    }
+                } else {
+                    val error = "Dispensing logs error: ${dispensingLogsResponse.message()}, Receiving logs error: ${receivingLogsResponse.message()}"
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            error = error
+                        )
+                    }
                 }
-
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(

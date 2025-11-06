@@ -30,8 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.aptekaspm_mobile.data.network.models.ReceiveLogItem
-import com.example.aptekaspm_mobile.data.network.models.RestockLogItem
+import com.example.aptekaspm_mobile.data.network.models.DispensingLogItem
+import com.example.aptekaspm_mobile.data.network.models.ReceivingLogItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,7 +40,7 @@ fun LogsScreen(
     viewModel: LogsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val tabs = listOf("Restock Logs", "Receive Logs")
+    val tabs = listOf("Dispensing Logs", "Receiving Logs")
 
     Scaffold(
         topBar = {
@@ -79,8 +79,8 @@ fun LogsScreen(
                 }
             } else {
                 when (uiState.selectedTab) {
-                    0 -> RestockLogsList(uiState.restockLogs)
-                    1 -> ReceiveLogsList(uiState.receiveLogs)
+                    0 -> DispensingLogsList(uiState.dispensingLogs)
+                    1 -> ReceivingLogsList(uiState.receivingLogs)
                 }
             }
         }
@@ -88,7 +88,7 @@ fun LogsScreen(
 }
 
 @Composable
-fun RestockLogsList(logs: List<RestockLogItem>) {
+fun DispensingLogsList(logs: List<DispensingLogItem>) {
     LazyColumn(contentPadding = PaddingValues(16.dp)) {
         items(logs) { log ->
             Card(modifier = Modifier
@@ -99,6 +99,7 @@ fun RestockLogsList(logs: List<RestockLogItem>) {
                         "Medication: ${log.medicationName}",
                         style = MaterialTheme.typography.titleMedium
                     )
+                    Text("GID: ${log.gid}")
                     Text("SN: ${log.sn}")
                     Text("To Medkit: ${log.medkitId}")
                     Text("Amount: ${log.transferAmount}")
@@ -110,7 +111,7 @@ fun RestockLogsList(logs: List<RestockLogItem>) {
 }
 
 @Composable
-fun ReceiveLogsList(logs: List<ReceiveLogItem>) {
+fun ReceivingLogsList(logs: List<ReceivingLogItem>) {
     LazyColumn(contentPadding = PaddingValues(16.dp)) {
         items(logs) { log ->
             Card(modifier = Modifier
@@ -121,6 +122,7 @@ fun ReceiveLogsList(logs: List<ReceiveLogItem>) {
                         "Medication: ${log.medicationName}",
                         style = MaterialTheme.typography.titleMedium
                     )
+                    Text("GID: ${log.gid}")
                     Text("SN: ${log.sn}")
                     Text("Received: ${log.receiveDate}")
                     Text("Expires: ${log.expiryDate}")

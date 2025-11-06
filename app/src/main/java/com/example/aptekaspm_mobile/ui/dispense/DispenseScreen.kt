@@ -1,4 +1,4 @@
-package com.example.aptekaspm_mobile.ui.restock
+package com.example.aptekaspm_mobile.ui.dispense
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -15,9 +15,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 
 @Composable
-fun RestockScreen(
+fun DispenseScreen(
     navController: NavController,
-    viewModel: RestockViewModel = hiltViewModel()
+    viewModel: DispenseViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -38,7 +38,7 @@ fun RestockScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text("Restock Medkit", style = MaterialTheme.typography.headlineMedium)
+            Text("Dispense Medication", style = MaterialTheme.typography.headlineMedium)
             Spacer(modifier = Modifier.height(16.dp))
 
             Text("${uiState.name} (${uiState.inn})", style = MaterialTheme.typography.titleMedium)
@@ -66,8 +66,8 @@ fun RestockScreen(
             if (uiState.isLoading) {
                 CircularProgressIndicator()
             } else {
-                Button(onClick = viewModel::restockMedkit) {
-                    Text("Confirm Restock")
+                Button(onClick = viewModel::dispenseMedication) {
+                    Text("Confirm Dispense")
                 }
             }
 
