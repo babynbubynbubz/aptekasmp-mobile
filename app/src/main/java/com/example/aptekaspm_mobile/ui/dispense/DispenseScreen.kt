@@ -2,6 +2,7 @@ package com.example.aptekaspm_mobile.ui.dispense
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -35,6 +36,9 @@ fun DispenseScreen(
     LaunchedEffect(uiState.isSuccess) {
         if (uiState.isSuccess) {
             navController.previousBackStackEntry?.savedStateHandle?.set("should_clear", true)
+            if (uiState.seriesStarted) {
+                navController.previousBackStackEntry?.savedStateHandle?.set("newSeriesMedkitId", uiState.medkitId)
+            }
             navController.popBackStack()
         }
     }
@@ -81,11 +85,21 @@ fun DispenseScreen(
             if (uiState.isLoading) {
                 CircularProgressIndicator()
             } else {
-                Button(
-                    onClick = viewModel::dispenseMedication,
-                    enabled = uiState.medkitId.isNotBlank() && uiState.transferAmount.isNotBlank() && !uiState.isExpired
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Text("Confirm Dispense")
+                    Button(
+                        onClick = viewModel::dispenseMedication,
+                        enabled = uiState.medkitId.isNotBlank() && uiState.transferAmount.isNotBlank() && !uiState.isExpired
+                    ) {
+                        Text("Dispense")
+                    }
+                    Button(
+                        onClick = viewModel::dispenseAndStartSeries,
+                        enabled = uiState.medkitId.isNotBlank() && uiState.transferAmount.isNotBlank() && !uiState.isExpired
+                    ) {
+                        Text("Dispense and Start Series")
+                    }
                 }
             }
 

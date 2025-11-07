@@ -31,6 +31,7 @@ data class MainScreenState(
     val medicationInfo: MedicationInfoResponse? = null,
     val error: String? = null,
     val navigationEvent: NavigationEvent? = null,
+    val seriesMedkitId: String? = null,
 )
 
 @HiltViewModel
@@ -111,5 +112,9 @@ class MainViewModel @Inject constructor(
 
     fun clearError() {
         _uiState.update { it.copy(error = null) }
+    }
+
+    fun setSeriesMedkitId(medkitId: String?) {
+        _uiState.update { it.copy(seriesMedkitId = medkitId) }
     }
 }

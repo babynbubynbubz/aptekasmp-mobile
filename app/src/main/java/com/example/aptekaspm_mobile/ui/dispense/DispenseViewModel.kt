@@ -29,7 +29,8 @@ data class DispenseScreenState(
     val transferAmount: String = "",
     val error: String? = null,
     val isSuccess: Boolean = false,
-    val isExpired: Boolean = false
+    val isExpired: Boolean = false,
+    val seriesStarted: Boolean = false
 )
 
 @HiltViewModel
@@ -69,7 +70,8 @@ class DispenseViewModel @Inject constructor(
                 inBoxAmount = savedStateHandle.get<Int>("inBoxAmount") ?: 0,
                 remainingAmount = savedStateHandle.get<Int>("remainingAmount") ?: 0,
                 expiryDate = expiryDateStr,
-                isExpired = isExpired
+                isExpired = isExpired,
+                medkitId = savedStateHandle.get<String>("seriesMedkitId") ?: ""
             )
         }
     }
@@ -83,6 +85,14 @@ class DispenseViewModel @Inject constructor(
     }
 
     fun dispenseMedication() {
+        dispense(startSeries = false)
+    }
+
+    fun dispenseAndStartSeries() {
+        dispense(startSeries = true)
+    }
+
+    private fun dispense(startSeries: Boolean) {
         val medkitId = _uiState.value.medkitId.toIntOrNull()
         val transferAmount = _uiState.value.transferAmount.toIntOrNull()
 
@@ -102,7 +112,7 @@ class DispenseViewModel @Inject constructor(
                 )
                 val response = apiService.dispenseMedication(request)
                 if (response.isSuccessful) {
-                    _uiState.update { it.copy(isLoading = false, isSuccess = true) }
+                    _uiState.update { it.copy(isLoading = false, isSuccess = true, seriesStarted = startSeries) }
                 } else {
                     _uiState.update { it.copy(isLoading = false, error = "Dispense failed: ${response.message()}") }
                 }

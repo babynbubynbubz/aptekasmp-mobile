@@ -42,6 +42,10 @@ fun AppNavigation() {
                 navArgument("inBoxAmount") { type = NavType.IntType },
                 navArgument("remainingAmount") { type = NavType.IntType },
                 navArgument("expiryDate") { type = NavType.StringType },
+                navArgument("seriesMedkitId") {
+                    type = NavType.StringType
+                    nullable = true
+                }
             )
         ) { backStackEntry ->
             DispenseScreen(navController = navController)

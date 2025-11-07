@@ -24,7 +24,7 @@ sealed class Screen(val route: String) {
     }
 
     object Dispense :
-        Screen("dispense_screen/{scanData}/{gid}/{sn}/{name}/{inn}/{inBoxAmount}/{remainingAmount}/{expiryDate}") {
+        Screen("dispense_screen/{scanData}/{gid}/{sn}/{name}/{inn}/{inBoxAmount}/{remainingAmount}/{expiryDate}?seriesMedkitId={seriesMedkitId}") {
         fun createRoute(
             scanData: String,
             gid: String,
@@ -33,13 +33,19 @@ sealed class Screen(val route: String) {
             inn: String,
             inBoxAmount: Int,
             remainingAmount: Int,
-            expiryDate: String
+            expiryDate: String,
+            seriesMedkitId: String? = null
         ): String {
             val encodedScanData = URLEncoder.encode(scanData, StandardCharsets.UTF_8.toString())
             val encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8.toString())
             val encodedInn = URLEncoder.encode(inn, StandardCharsets.UTF_8.toString())
             val encodedExpiry = URLEncoder.encode(expiryDate, StandardCharsets.UTF_8.toString())
-            return "dispense_screen/$encodedScanData/$gid/$sn/$encodedName/$encodedInn/$inBoxAmount/$remainingAmount/$encodedExpiry"
+            val baseRoute = "dispense_screen/$encodedScanData/$gid/$sn/$encodedName/$encodedInn/$inBoxAmount/$remainingAmount/$encodedExpiry"
+            return if (seriesMedkitId != null) {
+                "$baseRoute?seriesMedkitId=$seriesMedkitId"
+            } else {
+                baseRoute
+            }
         }
     }
 }

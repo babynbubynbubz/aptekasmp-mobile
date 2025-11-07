@@ -53,6 +53,19 @@ fun MainScreen(
         }
     }
 
+    val newSeriesMedkitIdState = navController.currentBackStackEntry
+        ?.savedStateHandle
+        ?.getLiveData<String>("newSeriesMedkitId")
+        ?.observeAsState()
+    val newSeriesMedkitId = newSeriesMedkitIdState?.value
+
+    LaunchedEffect(newSeriesMedkitId) {
+        newSeriesMedkitId?.let {
+            viewModel.setSeriesMedkitId(it)
+            navController.currentBackStackEntry?.savedStateHandle?.remove<String>("newSeriesMedkitId")
+        }
+    }
+
     LaunchedEffect(uiState.navigationEvent) {
         uiState.navigationEvent?.let { event ->
             when (event) {
@@ -79,7 +92,8 @@ fun MainScreen(
                             inn = event.medInfo.info.inn,
                             inBoxAmount = event.medInfo.info.inBoxAmount,
                             remainingAmount = event.medInfo.storageInfo!!.inBoxRemaining,
-                            expiryDate = event.medInfo.storageInfo.expiryDate
+                            expiryDate = event.medInfo.storageInfo.expiryDate,
+                            seriesMedkitId = uiState.seriesMedkitId
                         )
                     )
                 }
@@ -96,6 +110,8 @@ fun MainScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
+            SeriesInfo(uiState.seriesMedkitId) { viewModel.setSeriesMedkitId(null) }
+
             if (cameraPermissionState.status.isGranted) {
                 Box(modifier = Modifier.weight(1f)) {
                     CameraPreview(onBarcodeDetected = { viewModel.onBarcodeScanned(it) })
@@ -132,6 +148,23 @@ fun MainScreen(
                         Text("Grant Permission")
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SeriesInfo(seriesMedkitId: String?, onCancelSeries: () -> Unit) {
+    seriesMedkitId?.let {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Current series medkit ID: $it")
+            Button(onClick = onCancelSeries) {
+                Text("Cancel Series")
             }
         }
     }
