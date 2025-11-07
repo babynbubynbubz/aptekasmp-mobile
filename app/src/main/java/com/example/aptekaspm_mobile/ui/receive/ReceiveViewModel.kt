@@ -10,10 +10,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import javax.inject.Inject
 
 data class ReceiveScreenState(
     val isLoading: Boolean = false,
@@ -25,7 +27,8 @@ data class ReceiveScreenState(
     val inBoxAmount: Int = 0,
     val expiryDate: String = "",
     val error: String? = null,
-    val isSuccess: Boolean = false
+    val isSuccess: Boolean = false,
+    val showDatePickerDialog: Boolean = false
 )
 
 @HiltViewModel
@@ -56,8 +59,18 @@ class ReceiveViewModel @Inject constructor(
         }
     }
 
-    fun onExpiryDateChanged(date: String) {
-        _uiState.update { it.copy(expiryDate = date) }
+    fun onShowDatePicker() {
+        _uiState.update { it.copy(showDatePickerDialog = true) }
+    }
+
+    fun onDismissDatePicker() {
+        _uiState.update { it.copy(showDatePickerDialog = false) }
+    }
+
+    fun onExpiryDateSelected(dateMillis: Long) {
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val formattedDate = sdf.format(Date(dateMillis))
+        _uiState.update { it.copy(expiryDate = formattedDate, showDatePickerDialog = false) }
     }
 
     fun receiveMedication() {
