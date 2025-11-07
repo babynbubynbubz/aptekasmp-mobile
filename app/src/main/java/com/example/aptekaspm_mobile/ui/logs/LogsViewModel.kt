@@ -57,7 +57,8 @@ class LogsViewModel @Inject constructor(
                         )
                     }
                 } else {
-                    val error = "Dispensing logs error: ${dispensingLogsResponse.message()}, Receiving logs error: ${receivingLogsResponse.message()}"
+                    val error =
+                        "Dispensing logs error: ${dispensingLogsResponse.message()}, Receiving logs error: ${receivingLogsResponse.message()}"
                     _uiState.update {
                         it.copy(
                             isLoading = false,

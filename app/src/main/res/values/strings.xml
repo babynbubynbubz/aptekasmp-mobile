@@ -1,3 +1,43 @@
 <resources>
-    <string name="app_name">aptekaspm-mobile</string>
+    <string name="app_name">AptekaSPMMobile</string>
+
+    <!-- MainScreen -->
+    <string name="logs">Logs</string>
+    <string name="camera_permission_required">Camera permission is required to use the scanner.</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="scan_something">Scan something...</string>
+    <string name="current_series_medkit_id">Current series medkit ID: %1$s</string>
+    <string name="cancel_series">Cancel Series</string>
+    <string name="remaining_in_box">Remaining in box: %1$d</string>
+    <string name="expires">Expires: %1$s</string>
+    <string name="total_in_box">Total in box: %1$d</string>
+
+    <!-- DispenseScreen -->
+    <string name="dispense_medication">Dispense Medication</string>
+    <string name="amount">Amount: %1$d/%2$d</string>
+    <string name="medkit_id">Medkit ID</string>
+    <string name="transfer_amount">Transfer Amount</string>
+    <string name="dispense">Dispense</string>
+    <string name="dispense_and_start_series">Dispense and Start Series</string>
+    <string name="back">Back</string>
+    <string name="invalid_medkit_id_or_amount">Invalid Medkit ID or Amount</string>
+    <string name="dispense_failed">Dispense failed: %1$s</string>
+
+    <!-- ReceiveScreen -->
+    <string name="receive_medication">Receive Medication</string>
+    <string name="select_expiry_date">Select Expiry Date</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm_receive">Confirm Receive</string>
+
+    <!-- LogsScreen -->
+    <string name="dispensing_logs">Dispensing Logs</string>
+    <string name="receiving_logs">Receiving Logs</string>
+    <string name="medication">Medication: %1$s</string>
+    <string name="gid">GID: %1$s</string>
+    <string name="sn">SN: %1$s</string>
+    <string name="to_medkit">To Medkit: %1$s</string>
+    <string name="log_amount">Amount: %1$d</string>
+    <string name="date">Date: %1$s</string>
+    <string name="received">Received: %1$s</string>
 </resources>

@@ -47,12 +47,12 @@ fun ReceiveScreen(
             onDismissRequest = viewModel::onDismissDatePicker,
             confirmButton = {
                 TextButton(onClick = { datePickerState.selectedDateMillis?.let(viewModel::onExpiryDateSelected) }) {
-                    Text("OK")
+                    Text("ОК")
                 }
             },
             dismissButton = {
                 TextButton(onClick = viewModel::onDismissDatePicker) {
-                    Text("Cancel")
+                    Text("Отмена")
                 }
             }
         ) {
@@ -71,16 +71,16 @@ fun ReceiveScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text("Receive Medication", style = MaterialTheme.typography.headlineMedium)
+            Text("Приемка лекарства", style = MaterialTheme.typography.headlineMedium)
             Spacer(modifier = Modifier.height(16.dp))
 
             Text("${uiState.name} (${uiState.inn})", style = MaterialTheme.typography.titleMedium)
             Text("GID: ${uiState.gid} / SN: ${uiState.sn}")
-            Text("Amount in box: ${uiState.inBoxAmount}")
+            Text("Всего в упаковке: ${uiState.inBoxAmount}")
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(onClick = viewModel::onShowDatePicker) {
-                Text(text = if (uiState.expiryDate.isNotBlank()) uiState.expiryDate else "Select Expiry Date")
+                Text(text = if (uiState.expiryDate.isNotBlank()) uiState.expiryDate else "Выберите срок годности")
             }
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -91,7 +91,7 @@ fun ReceiveScreen(
                     onClick = viewModel::receiveMedication,
                     enabled = uiState.expiryDate.isNotBlank()
                 ) {
-                    Text("Confirm Receive")
+                    Text("Подтвердить приемку")
                 }
             }
 
@@ -105,7 +105,7 @@ fun ReceiveScreen(
                 navController.previousBackStackEntry?.savedStateHandle?.set("should_clear", true)
                 navController.popBackStack() 
             }) {
-                Text("Back")
+                Text("Назад")
             }
         }
     }

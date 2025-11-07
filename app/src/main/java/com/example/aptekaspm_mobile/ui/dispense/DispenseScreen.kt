@@ -37,7 +37,10 @@ fun DispenseScreen(
         if (uiState.isSuccess) {
             navController.previousBackStackEntry?.savedStateHandle?.set("should_clear", true)
             if (uiState.seriesStarted) {
-                navController.previousBackStackEntry?.savedStateHandle?.set("newSeriesMedkitId", uiState.medkitId)
+                navController.previousBackStackEntry?.savedStateHandle?.set(
+                    "newSeriesMedkitId",
+                    uiState.medkitId
+                )
             }
             navController.popBackStack()
         }
@@ -54,22 +57,22 @@ fun DispenseScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text("Dispense Medication", style = MaterialTheme.typography.headlineMedium)
+            Text("Выдача лекарства", style = MaterialTheme.typography.headlineMedium)
             Spacer(modifier = Modifier.height(16.dp))
 
             Text("${uiState.name} (${uiState.inn})", style = MaterialTheme.typography.titleMedium)
             Text(
-                text = "Expires: ${formatDate(uiState.expiryDate)}",
+                text = "Срок годности: ${formatDate(uiState.expiryDate)}",
                 color = if (uiState.isExpired) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
             )
-            Text("Amount: ${uiState.remainingAmount}/${uiState.inBoxAmount}")
+            Text("Количество: ${uiState.remainingAmount}/${uiState.inBoxAmount}")
 
             Spacer(modifier = Modifier.height(24.dp))
 
             OutlinedTextField(
                 value = uiState.medkitId,
                 onValueChange = viewModel::onMedkitIdChanged,
-                label = { Text("Medkit ID") },
+                label = { Text("ID аптечки") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -77,7 +80,7 @@ fun DispenseScreen(
             OutlinedTextField(
                 value = uiState.transferAmount,
                 onValueChange = viewModel::onTransferAmountChanged,
-                label = { Text("Transfer Amount") },
+                label = { Text("Количество для выдачи") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
             Spacer(modifier = Modifier.height(24.dp))
@@ -92,14 +95,14 @@ fun DispenseScreen(
                         onClick = viewModel::dispenseMedication,
                         enabled = uiState.medkitId.isNotBlank() && uiState.transferAmount.isNotBlank() && !uiState.isExpired
                     ) {
-                        Text("Dispense")
+                        Text("Выдать")
                     }
                     if (!uiState.isSeriesActive) {
                         Button(
                             onClick = viewModel::dispenseAndStartSeries,
                             enabled = uiState.medkitId.isNotBlank() && uiState.transferAmount.isNotBlank() && !uiState.isExpired
                         ) {
-                            Text("Dispense and Start Series")
+                            Text("Выдать и начать серию")
                         }
                     }
                 }
@@ -111,11 +114,11 @@ fun DispenseScreen(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { 
+            Button(onClick = {
                 navController.previousBackStackEntry?.savedStateHandle?.set("should_clear", true)
-                navController.popBackStack() 
+                navController.popBackStack()
             }) {
-                Text("Back")
+                Text("Назад")
             }
         }
     }

@@ -41,15 +41,15 @@ fun LogsScreen(
     viewModel: LogsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val tabs = listOf("Dispensing Logs", "Receiving Logs")
+    val tabs = listOf("Логи выдачи", "Логи приемки")
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Logs") },
+                title = { Text("Логи") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
                     }
                 }
             )
@@ -92,19 +92,21 @@ fun LogsScreen(
 fun DispensingLogsList(logs: List<DispensingLogItem>) {
     LazyColumn(contentPadding = PaddingValues(16.dp)) {
         items(logs) { log ->
-            Card(modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp)) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp)
+            ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        "Medication: ${log.medicationName}",
+                        "Лекарство: ${log.medicationName}",
                         style = MaterialTheme.typography.titleMedium
                     )
                     Text("GID: ${log.gid}")
                     Text("SN: ${log.sn}")
-                    Text("To Medkit: ${log.medkitId}")
-                    Text("Amount: ${log.transferAmount}")
-                    Text("Date: ${formatDate(log.transferDate)}")
+                    Text("ID аптечки: ${log.medkitId}")
+                    Text("Количество: ${log.transferAmount}")
+                    Text("Дата: ${formatDate(log.transferDate)}")
                 }
             }
         }
@@ -115,18 +117,20 @@ fun DispensingLogsList(logs: List<DispensingLogItem>) {
 fun ReceivingLogsList(logs: List<ReceivingLogItem>) {
     LazyColumn(contentPadding = PaddingValues(16.dp)) {
         items(logs) { log ->
-            Card(modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp)) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp)
+            ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        "Medication: ${log.medicationName}",
+                        "Лекарство: ${log.medicationName}",
                         style = MaterialTheme.typography.titleMedium
                     )
                     Text("GID: ${log.gid}")
                     Text("SN: ${log.sn}")
-                    Text("Received: ${formatDate(log.receiveDate)}")
-                    Text("Expires: ${formatDate(log.expiryDate)}")
+                    Text("Принято: ${formatDate(log.receiveDate)}")
+                    Text("Срок годности: ${formatDate(log.expiryDate)}")
                 }
             }
         }

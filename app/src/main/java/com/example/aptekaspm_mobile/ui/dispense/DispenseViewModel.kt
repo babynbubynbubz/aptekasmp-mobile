@@ -59,7 +59,10 @@ class DispenseViewModel @Inject constructor(
 
         _uiState.update {
             it.copy(
-                scanData = URLDecoder.decode(savedStateHandle.get<String>("scanData") ?: "", StandardCharsets.UTF_8.toString()),
+                scanData = URLDecoder.decode(
+                    savedStateHandle.get<String>("scanData") ?: "",
+                    StandardCharsets.UTF_8.toString()
+                ),
                 gid = savedStateHandle.get<String>("gid") ?: "",
                 sn = savedStateHandle.get<String>("sn") ?: "",
                 name = URLDecoder.decode(
@@ -101,7 +104,7 @@ class DispenseViewModel @Inject constructor(
         val transferAmount = _uiState.value.transferAmount.toIntOrNull()
 
         if (medkitId == null || transferAmount == null) {
-            _uiState.update { it.copy(error = "Invalid Medkit ID or Amount") }
+            _uiState.update { it.copy(error = "Неверный ID аптечки или количество") }
             return
         }
 
@@ -116,9 +119,20 @@ class DispenseViewModel @Inject constructor(
                 )
                 val response = apiService.dispenseMedication(request)
                 if (response.isSuccessful) {
-                    _uiState.update { it.copy(isLoading = false, isSuccess = true, seriesStarted = startSeries) }
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            isSuccess = true,
+                            seriesStarted = startSeries
+                        )
+                    }
                 } else {
-                    _uiState.update { it.copy(isLoading = false, error = "Dispense failed: ${response.message()}") }
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            error = "Ошибка выдачи: ${response.message()}"
+                        )
+                    }
                 }
             } catch (e: Exception) {
                 _uiState.update { it.copy(isLoading = false, error = e.message) }

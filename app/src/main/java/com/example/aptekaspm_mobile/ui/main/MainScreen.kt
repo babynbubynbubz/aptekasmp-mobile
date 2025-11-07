@@ -129,7 +129,7 @@ fun MainScreen(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Button(onClick = { navController.navigate(Screen.Logs.route) }) {
-                        Text("Logs")
+                        Text("Логи")
                     }
                 }
             } else {
@@ -141,11 +141,11 @@ fun MainScreen(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "Camera permission is required to use the scanner.",
+                        text = "Для использования сканера необходимо разрешение на использование камеры.",
                         textAlign = TextAlign.Center
                     )
                     Button(onClick = { cameraPermissionState.launchPermissionRequest() }) {
-                        Text("Grant Permission")
+                        Text("Дать разрешение")
                     }
                 }
             }
@@ -162,9 +162,9 @@ private fun SeriesInfo(seriesMedkitId: String?, onCancelSeries: () -> Unit) {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Current series medkit ID: $it")
+            Text("Текущий ID аптечки для серии: $it")
             Button(onClick = onCancelSeries) {
-                Text("Cancel Series")
+                Text("Отменить серию")
             }
         }
     }
@@ -189,13 +189,13 @@ private fun InfoDisplay(uiState: MainScreenState) {
                 style = MaterialTheme.typography.titleMedium
             )
             Text(text = "GID: ${info.info.gid} / SN: ${info.info.sn}")
-            Text(text = "Total in box: ${info.info.inBoxAmount}")
+            Text(text = "Всего в упаковке: ${info.info.inBoxAmount}")
             info.storageInfo?.let {
-                Text(text = "Remaining in box: ${it.inBoxRemaining}")
-                Text(text = "Expires: ${formatDate(it.expiryDate)}")
+                Text(text = "Осталось в упаковке: ${it.inBoxRemaining}")
+                Text(text = "Срок годности: ${formatDate(it.expiryDate)}")
             }
         } else if (uiState.scannedCode == null) {
-            Text(text = "Scan something...")
+            Text(text = "Отсканируйте код на коробке...")
         }
     }
 }
