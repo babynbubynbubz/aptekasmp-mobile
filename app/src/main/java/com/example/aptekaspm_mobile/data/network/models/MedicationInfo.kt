@@ -21,5 +21,5 @@ data class MedicationDetails(
 
 data class StorageInfo(
     val inBoxRemaining: Int,
-    val expiryDate: String // Assuming ISO 8601 date format as String
+    val expiryDate: String
 )

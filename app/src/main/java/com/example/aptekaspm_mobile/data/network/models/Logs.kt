@@ -4,18 +4,18 @@ data class DispensingLogItem(
     val boxId: Int,
     val medkitId: Int,
     val transferAmount: Int,
-    val transferDate: String, // Assuming ISO 8601 date format
+    val transferDate: String,
     val medicationName: String,
     val gid: String,
     val sn: String,
-    val expiryDate: String // Assuming ISO 8601 date format
+    val expiryDate: String
 )
 
 data class ReceivingLogItem(
     val boxId: Int,
-    val receiveDate: String, // Assuming ISO 8601 date format
+    val receiveDate: String,
     val medicationName: String,
     val gid: String,
     val sn: String,
-    val expiryDate: String // Assuming ISO 8601 date format
+    val expiryDate: String
 )

@@ -36,7 +36,7 @@ class MainViewModel @Inject constructor(
             it.copy(
                 isLoading = true,
                 scannedCode = barcode,
-                medicationInfo = null, // Clear previous info
+                medicationInfo = null,
                 error = null
             )
         }
