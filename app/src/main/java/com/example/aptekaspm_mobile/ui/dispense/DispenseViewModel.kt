@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
+import java.time.OffsetDateTime
 
 data class DispenseScreenState(
     val isLoading: Boolean = false,
@@ -27,7 +28,8 @@ data class DispenseScreenState(
     val medkitId: String = "",
     val transferAmount: String = "",
     val error: String? = null,
-    val isSuccess: Boolean = false
+    val isSuccess: Boolean = false,
+    val isExpired: Boolean = false
 )
 
 @HiltViewModel
@@ -40,6 +42,17 @@ class DispenseViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
+        val expiryDateStr = URLDecoder.decode(
+            savedStateHandle.get<String>("expiryDate") ?: "",
+            StandardCharsets.UTF_8.toString()
+        )
+        val isExpired = try {
+            val expiryDate = OffsetDateTime.parse(expiryDateStr)
+            expiryDate.isBefore(OffsetDateTime.now())
+        } catch (e: Exception) {
+            false
+        }
+
         _uiState.update {
             it.copy(
                 scanData = URLDecoder.decode(savedStateHandle.get<String>("scanData") ?: "", StandardCharsets.UTF_8.toString()),
@@ -55,10 +68,8 @@ class DispenseViewModel @Inject constructor(
                 ),
                 inBoxAmount = savedStateHandle.get<Int>("inBoxAmount") ?: 0,
                 remainingAmount = savedStateHandle.get<Int>("remainingAmount") ?: 0,
-                expiryDate = URLDecoder.decode(
-                    savedStateHandle.get<String>("expiryDate") ?: "",
-                    StandardCharsets.UTF_8.toString()
-                )
+                expiryDate = expiryDateStr,
+                isExpired = isExpired
             )
         }
     }

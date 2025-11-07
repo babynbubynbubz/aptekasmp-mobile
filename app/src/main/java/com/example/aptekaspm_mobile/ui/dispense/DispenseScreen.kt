@@ -54,7 +54,10 @@ fun DispenseScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text("${uiState.name} (${uiState.inn})", style = MaterialTheme.typography.titleMedium)
-            Text("Expires: ${formatDate(uiState.expiryDate)}")
+            Text(
+                text = "Expires: ${formatDate(uiState.expiryDate)}",
+                color = if (uiState.isExpired) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+            )
             Text("Amount: ${uiState.remainingAmount}/${uiState.inBoxAmount}")
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -80,7 +83,7 @@ fun DispenseScreen(
             } else {
                 Button(
                     onClick = viewModel::dispenseMedication,
-                    enabled = uiState.medkitId.isNotBlank() && uiState.transferAmount.isNotBlank()
+                    enabled = uiState.medkitId.isNotBlank() && uiState.transferAmount.isNotBlank() && !uiState.isExpired
                 ) {
                     Text("Confirm Dispense")
                 }
