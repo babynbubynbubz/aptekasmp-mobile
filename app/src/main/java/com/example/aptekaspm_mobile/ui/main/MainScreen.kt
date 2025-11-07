@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -39,6 +41,41 @@ fun MainScreen(
     val uiState by viewModel.uiState.collectAsState()
     val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
 
+    LaunchedEffect(uiState.navigationEvent) {
+        uiState.navigationEvent?.let { event ->
+            when (event) {
+                is NavigationEvent.ToReceive -> {
+                    navController.navigate(
+                        Screen.Receive.createRoute(
+                            scanData = event.scanData,
+                            gid = event.info.info.gid,
+                            sn = event.info.info.sn,
+                            name = event.info.info.name,
+                            inn = event.info.info.inn,
+                            inBoxAmount = event.info.info.inBoxAmount
+                        )
+                    )
+                }
+
+                is NavigationEvent.ToDispense -> {
+                    navController.navigate(
+                        Screen.Dispense.createRoute(
+                            scanData = event.scanData,
+                            gid = event.medInfo.info.gid,
+                            sn = event.medInfo.info.sn,
+                            name = event.medInfo.info.name,
+                            inn = event.medInfo.info.inn,
+                            inBoxAmount = event.medInfo.info.inBoxAmount,
+                            remainingAmount = event.medInfo.storageInfo!!.inBoxRemaining,
+                            expiryDate = event.medInfo.storageInfo.expiryDate
+                        )
+                    )
+                }
+            }
+            viewModel.onNavigationHandled()
+        }
+    }
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
@@ -55,63 +92,14 @@ fun MainScreen(
                     }
                 }
 
-                // Display for the scanned code info
                 InfoDisplay(uiState)
 
-                // Navigation buttons
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    val isNavEnabled = uiState.medicationInfo != null
-                    Button(
-                        onClick = {
-                            uiState.medicationInfo?.info?.let { info ->
-                                uiState.scannedCode?.let { scanData ->
-                                    navController.navigate(
-                                        Screen.Receive.createRoute(
-                                            scanData = scanData,
-                                            gid = info.gid,
-                                            sn = info.sn,
-                                            name = info.name,
-                                            inn = info.inn,
-                                            inBoxAmount = info.inBoxAmount
-                                        )
-                                    )
-                                }
-                            }
-                        },
-                        enabled = isNavEnabled
-                    ) {
-                        Text("Receive")
-                    }
-                    Button(
-                        onClick = {
-                            uiState.medicationInfo?.let { medInfo ->
-                                medInfo.storageInfo?.let {
-                                    uiState.scannedCode?.let { scanData ->
-                                        navController.navigate(
-                                            Screen.Dispense.createRoute(
-                                                scanData = scanData,
-                                                gid = medInfo.info.gid,
-                                                sn = medInfo.info.sn,
-                                                name = medInfo.info.name,
-                                                inn = medInfo.info.inn,
-                                                inBoxAmount = medInfo.info.inBoxAmount,
-                                                remainingAmount = it.inBoxRemaining,
-                                                expiryDate = it.expiryDate
-                                            )
-                                        )
-                                    }
-                                }
-                            }
-                        },
-                        enabled = isNavEnabled && uiState.medicationInfo?.storageInfo != null
-                    ) {
-                        Text("Dispense")
-                    }
                     Button(onClick = { navController.navigate(Screen.Logs.route) }) {
                         Text("Logs")
                     }

@@ -13,11 +13,24 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+sealed class NavigationEvent {
+    data class ToReceive(
+        val scanData: String,
+        val info: MedicationInfoResponse,
+    ) : NavigationEvent()
+
+    data class ToDispense(
+        val scanData: String,
+        val medInfo: MedicationInfoResponse,
+    ) : NavigationEvent()
+}
+
 data class MainScreenState(
     val isLoading: Boolean = false,
     val scannedCode: String? = null,
     val medicationInfo: MedicationInfoResponse? = null,
-    val error: String? = null
+    val error: String? = null,
+    val navigationEvent: NavigationEvent? = null,
 )
 
 @HiltViewModel
@@ -29,15 +42,15 @@ class MainViewModel @Inject constructor(
     val uiState: StateFlow<MainScreenState> = _uiState.asStateFlow()
 
     fun onBarcodeScanned(barcode: String) {
-        // Prevent re-scanning the same code
-        if (barcode == _uiState.value.scannedCode) return
+        if (barcode == _uiState.value.scannedCode && _uiState.value.navigationEvent == null) return
 
         _uiState.update {
             it.copy(
                 isLoading = true,
                 scannedCode = barcode,
                 medicationInfo = null,
-                error = null
+                error = null,
+                navigationEvent = null
             )
         }
 
@@ -47,11 +60,20 @@ class MainViewModel @Inject constructor(
                 val response = apiService.getMedicationInfo(request)
 
                 if (response.isSuccessful) {
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            medicationInfo = response.body()
-                        )
+                    val medicationInfo = response.body()
+                    if (medicationInfo != null) {
+                        val navigationEvent = if (medicationInfo.storageInfo == null) {
+                            NavigationEvent.ToReceive(barcode, medicationInfo)
+                        } else {
+                            NavigationEvent.ToDispense(barcode, medicationInfo)
+                        }
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                medicationInfo = medicationInfo,
+                                navigationEvent = navigationEvent
+                            )
+                        }
                     }
                 } else {
                     _uiState.update {
@@ -70,6 +92,10 @@ class MainViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun onNavigationHandled() {
+        _uiState.update { it.copy(navigationEvent = null) }
     }
 
     fun clearError() {
