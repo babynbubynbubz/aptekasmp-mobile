@@ -1,31 +1,201 @@
 package com.example.aptekaspm_mobile.ui.main
 
+import android.Manifest
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.aptekaspm_mobile.ui.navigation.Screen
+import com.example.aptekaspm_mobile.ui.utils.formatDate
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun MainScreen(
+    navController: NavController,
+    viewModel: MainViewModel = hiltViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
+
+    val shouldClearState = navController.currentBackStackEntry
+        ?.savedStateHandle
+        ?.getLiveData<Boolean>("should_clear")
+        ?.observeAsState()
+    val shouldClear = shouldClearState?.value
+
+    LaunchedEffect(shouldClear) {
+        if (shouldClear == true) {
+            viewModel.clearScanData()
+            navController.currentBackStackEntry?.savedStateHandle?.remove<Boolean>("should_clear")
+        }
+    }
+
+    val newSeriesMedkitIdState = navController.currentBackStackEntry
+        ?.savedStateHandle
+        ?.getLiveData<String>("newSeriesMedkitId")
+        ?.observeAsState()
+    val newSeriesMedkitId = newSeriesMedkitIdState?.value
+
+    LaunchedEffect(newSeriesMedkitId) {
+        newSeriesMedkitId?.let {
+            viewModel.setSeriesMedkitId(it)
+            navController.currentBackStackEntry?.savedStateHandle?.remove<String>("newSeriesMedkitId")
+        }
+    }
+
+    LaunchedEffect(uiState.navigationEvent) {
+        uiState.navigationEvent?.let { event ->
+            when (event) {
+                is NavigationEvent.ToReceive -> {
+                    navController.navigate(
+                        Screen.Receive.createRoute(
+                            scanData = event.scanData,
+                            gid = event.info.info.gid,
+                            sn = event.info.info.sn,
+                            name = event.info.info.name,
+                            inn = event.info.info.inn,
+                            inBoxAmount = event.info.info.inBoxAmount
+                        )
+                    )
+                }
+
+                is NavigationEvent.ToDispense -> {
+                    navController.navigate(
+                        Screen.Dispense.createRoute(
+                            scanData = event.scanData,
+                            gid = event.medInfo.info.gid,
+                            sn = event.medInfo.info.sn,
+                            name = event.medInfo.info.name,
+                            inn = event.medInfo.info.inn,
+                            inBoxAmount = event.medInfo.info.inBoxAmount,
+                            remainingAmount = event.medInfo.storageInfo!!.inBoxRemaining,
+                            expiryDate = event.medInfo.storageInfo.expiryDate,
+                            seriesMedkitId = uiState.seriesMedkitId
+                        )
+                    )
+                }
+            }
+            viewModel.onNavigationHandled()
+        }
+    }
+
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            SeriesInfo(uiState.seriesMedkitId) { viewModel.setSeriesMedkitId(null) }
+
+            if (cameraPermissionState.status.isGranted) {
+                Box(modifier = Modifier.weight(1f)) {
+                    CameraPreview(onBarcodeDetected = { viewModel.onBarcodeScanned(it) })
+                    if (uiState.isLoading) {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    }
+                }
+
+                InfoDisplay(uiState)
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Button(onClick = { navController.navigate(Screen.Logs.route) }) {
+                        Text("Логи")
+                    }
+                }
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Для использования сканера необходимо разрешение на использование камеры.",
+                        textAlign = TextAlign.Center
+                    )
+                    Button(onClick = { cameraPermissionState.launchPermissionRequest() }) {
+                        Text("Дать разрешение")
+                    }
+                }
+            }
+        }
+    }
+}
 
 @Composable
-fun MainScreen(navController: NavController) {
+private fun SeriesInfo(seriesMedkitId: String?, onCancelSeries: () -> Unit) {
+    seriesMedkitId?.let {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Текущий ID аптечки для серии: $it")
+            Button(onClick = onCancelSeries) {
+                Text("Отменить серию")
+            }
+        }
+    }
+}
+
+@Composable
+private fun InfoDisplay(uiState: MainScreenState) {
     Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onClick = { navController.navigate(Screen.Receive.route) }) {
-            Text("Receive Medicine")
+        if (uiState.error != null) {
+            Text(text = uiState.error, color = MaterialTheme.colorScheme.error)
         }
-        Button(onClick = { navController.navigate(Screen.Restock.route) }) {
-            Text("Restock Medkit")
-        }
-        Button(onClick = { navController.navigate(Screen.Logs.route) }) {
-            Text("View Logs")
+
+        val info = uiState.medicationInfo
+        if (info != null) {
+            Text(
+                text = "${info.info.name} (${info.info.inn})",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Text(text = "GID: ${info.info.gid} / SN: ${info.info.sn}")
+            Text(text = "Всего в упаковке: ${info.info.inBoxAmount}")
+            info.storageInfo?.let {
+                Text(text = "Осталось в упаковке: ${it.inBoxRemaining}")
+                Text(text = "Срок годности: ${formatDate(it.expiryDate)}")
+            }
+        } else if (uiState.scannedCode == null) {
+            Text(text = "Отсканируйте код на коробке...")
         }
     }
 }
