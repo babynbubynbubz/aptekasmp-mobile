@@ -1,7 +1,6 @@
 package com.example.aptekaspm_mobile.ui.main
 
 import android.Manifest
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -26,11 +24,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.aptekaspm_mobile.ui.navigation.Screen
+import com.example.aptekaspm_mobile.ui.utils.formatDate
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-
-import androidx.compose.material3.Scaffold
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -147,7 +144,7 @@ private fun InfoDisplay(uiState: MainScreenState) {
             Text(text = "Total in box: ${info.info.inBoxAmount}")
             info.storageInfo?.let {
                 Text(text = "Remaining in box: ${it.inBoxRemaining}")
-                Text(text = "Expires: ${it.expiryDate}")
+                Text(text = "Expires: ${formatDate(it.expiryDate)}")
             }
         } else if (uiState.scannedCode == null) {
             Text(text = "Scan something...")

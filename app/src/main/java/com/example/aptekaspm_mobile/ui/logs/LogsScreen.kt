@@ -32,6 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.aptekaspm_mobile.data.network.models.DispensingLogItem
 import com.example.aptekaspm_mobile.data.network.models.ReceivingLogItem
+import com.example.aptekaspm_mobile.ui.utils.formatDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -103,7 +104,7 @@ fun DispensingLogsList(logs: List<DispensingLogItem>) {
                     Text("SN: ${log.sn}")
                     Text("To Medkit: ${log.medkitId}")
                     Text("Amount: ${log.transferAmount}")
-                    Text("Date: ${log.transferDate}")
+                    Text("Date: ${formatDate(log.transferDate)}")
                 }
             }
         }
@@ -124,8 +125,8 @@ fun ReceivingLogsList(logs: List<ReceivingLogItem>) {
                     )
                     Text("GID: ${log.gid}")
                     Text("SN: ${log.sn}")
-                    Text("Received: ${log.receiveDate}")
-                    Text("Expires: ${log.expiryDate}")
+                    Text("Received: ${formatDate(log.receiveDate)}")
+                    Text("Expires: ${formatDate(log.expiryDate)}")
                 }
             }
         }
