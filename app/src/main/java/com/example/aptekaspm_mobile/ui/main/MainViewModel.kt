@@ -98,6 +98,17 @@ class MainViewModel @Inject constructor(
         _uiState.update { it.copy(navigationEvent = null) }
     }
 
+    fun clearScanData() {
+        _uiState.update {
+            it.copy(
+                scannedCode = null,
+                medicationInfo = null,
+                error = null,
+                navigationEvent = null
+            )
+        }
+    }
+
     fun clearError() {
         _uiState.update { it.copy(error = null) }
     }

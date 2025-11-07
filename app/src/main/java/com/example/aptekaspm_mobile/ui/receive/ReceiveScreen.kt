@@ -37,6 +37,7 @@ fun ReceiveScreen(
 
     LaunchedEffect(uiState.isSuccess) {
         if (uiState.isSuccess) {
+            navController.previousBackStackEntry?.savedStateHandle?.set("should_clear", true)
             navController.popBackStack()
         }
     }
@@ -100,7 +101,10 @@ fun ReceiveScreen(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { navController.popBackStack() }) {
+            Button(onClick = { 
+                navController.previousBackStackEntry?.savedStateHandle?.set("should_clear", true)
+                navController.popBackStack() 
+            }) {
                 Text("Back")
             }
         }

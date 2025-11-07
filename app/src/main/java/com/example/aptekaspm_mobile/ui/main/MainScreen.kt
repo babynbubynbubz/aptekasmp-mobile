@@ -14,9 +14,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -37,6 +39,19 @@ fun MainScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
+
+    val shouldClearState = navController.currentBackStackEntry
+        ?.savedStateHandle
+        ?.getLiveData<Boolean>("should_clear")
+        ?.observeAsState()
+    val shouldClear = shouldClearState?.value
+
+    LaunchedEffect(shouldClear) {
+        if (shouldClear == true) {
+            viewModel.clearScanData()
+            navController.currentBackStackEntry?.savedStateHandle?.remove<Boolean>("should_clear")
+        }
+    }
 
     LaunchedEffect(uiState.navigationEvent) {
         uiState.navigationEvent?.let { event ->
