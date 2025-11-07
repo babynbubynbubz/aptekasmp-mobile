@@ -30,7 +30,8 @@ data class DispenseScreenState(
     val error: String? = null,
     val isSuccess: Boolean = false,
     val isExpired: Boolean = false,
-    val seriesStarted: Boolean = false
+    val seriesStarted: Boolean = false,
+    val isSeriesActive: Boolean = false
 )
 
 @HiltViewModel
@@ -54,6 +55,8 @@ class DispenseViewModel @Inject constructor(
             false
         }
 
+        val seriesMedkitId = savedStateHandle.get<String>("seriesMedkitId")
+
         _uiState.update {
             it.copy(
                 scanData = URLDecoder.decode(savedStateHandle.get<String>("scanData") ?: "", StandardCharsets.UTF_8.toString()),
@@ -71,7 +74,8 @@ class DispenseViewModel @Inject constructor(
                 remainingAmount = savedStateHandle.get<Int>("remainingAmount") ?: 0,
                 expiryDate = expiryDateStr,
                 isExpired = isExpired,
-                medkitId = savedStateHandle.get<String>("seriesMedkitId") ?: ""
+                medkitId = seriesMedkitId ?: "",
+                isSeriesActive = seriesMedkitId != null
             )
         }
     }

@@ -94,11 +94,13 @@ fun DispenseScreen(
                     ) {
                         Text("Dispense")
                     }
-                    Button(
-                        onClick = viewModel::dispenseAndStartSeries,
-                        enabled = uiState.medkitId.isNotBlank() && uiState.transferAmount.isNotBlank() && !uiState.isExpired
-                    ) {
-                        Text("Dispense and Start Series")
+                    if (!uiState.isSeriesActive) {
+                        Button(
+                            onClick = viewModel::dispenseAndStartSeries,
+                            enabled = uiState.medkitId.isNotBlank() && uiState.transferAmount.isNotBlank() && !uiState.isExpired
+                        ) {
+                            Text("Dispense and Start Series")
+                        }
                     }
                 }
             }
